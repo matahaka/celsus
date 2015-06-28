@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="celsus" default="Celsus website">
+
+    <target name="Celsus website">
+        <delete dir="www"/>
+        <mkdir dir="www"/>
+
+        <copy todir="www/src/css/">
+            <fileset dir="html/css/">
+                <include name="index.css"/>
+                <include name="menu-page.css"/>
+                <include name="menu-scroll.css"/>
+            </fileset>
+        </copy>
+        <copy todir="www/src/grf/">
+            <fileset dir="html/grf/" >
+                <include name="pattern.celsus.png"/>
+                <include name="294.GIF"/>
+                <include name="logo.415x273.png"/>
+                <include name="logo.415x83.png"/>
+            </fileset>
+        </copy>
+        <copy todir="www/src/grf/slider/">
+            <fileset dir="html/grf/slider/" includes="1.jpg"/>
+        </copy>
+       <!-- <copy todir="www/src/js/">
+            <fileset dir="html/js/">
+                <include name="hamster.js"/>
+            </fileset>
+        </copy>-->
+
+        <!--<copy todir="www/">-->
+            <!--<fileset dir="html/" includes="svgtest.html"/>-->
+        <!--</copy>-->
+
+       <exec executable="haxe" failonerror="true">
+            <arg line="-php www" />
+            <arg line="-cp lib"/>
+            <arg line="-cp src"/>
+            <arg line="-main celsus.HTML"/>
+            <arg line="-debug"/>
+        </exec>
+
+       <exec executable="haxe" failonerror="true">
+            <arg line="-js www/src/js/celsus.js" />
+           <arg line="-cp C:/SDKS/haxe/lib/actuate/1,8,6/"/>
+            <arg line="-cp lib"/>
+            <arg line="-cp src"/>
+            <arg line="-main celsus.HTML"/>
+            <arg line="-debug"/>
+        </exec>
+
+        <delete file="www/src/js/celsus.js.map"/>
+
+    </target>
+</project>
