@@ -4,11 +4,12 @@ import mthk.php.dom.elements.Div;
 class PageWspolpraca extends StandardPage
 {
     public function new() {
+        contentWithMenu = true;
         super();
         id = 'wspolpraca';
     }
 
-    override function rendeStandardContent():Void
+    override function renderStandardContent():Void
     {
         standardContent.innerHTML = '<h2><span >Świadczenie pomocy prawnej odbywa się w formie:</span></h2>
          <p ><span ><strong><span >- stałej obsługi prawnej</span></strong></span></p>

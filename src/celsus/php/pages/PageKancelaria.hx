@@ -4,10 +4,11 @@ import mthk.php.dom.elements.Div;
 class PageKancelaria extends StandardPage
 {
     public function new() {
+        contentWithMenu = true;
         super();
         id = 'kancelaria';
     }
-    override function rendeStandardContent():Void
+    override function renderStandardContent():Void
     {
         standardContent.innerHTML = '<h2><span style="font-family: book antiqua,palatino;"><strong>O Nas</strong></span></h2>
                   <p >&nbsp;</p>

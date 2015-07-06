@@ -15,6 +15,7 @@ class PageStart extends Page
     }
     override function renderContent():Void
     {
+        super.renderContent();
         var logoBig = new Div();
             logoBig.addClass("logo-img-big");
         var preloader = new Div("preloader");
@@ -22,8 +23,10 @@ class PageStart extends Page
         var fb = new FrameBorder();
             fb.addChild(logoBig);
             fb.addChild(preloader);
-        content.addChild(new FrameShadow(fb));
-        var menu = new PageMenu('start');
-        content.addChild(menu);
+        var fs = new FrameShadow(fb);
+        var menu = new PageMenu('start',true);
+            fs.addChild(menu);
+        content.addChild(fs);
+
     }
 }

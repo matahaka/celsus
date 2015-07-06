@@ -6,21 +6,31 @@ import celsus.php.body.Page;
 import celsus.php.body.PageFooter;
 class StandardPage extends Page
 {
+    var contentWithMenu:Bool;
     var standardContent:Div;
+    var pageFrame:FramePage;
     public function new() {
         super();
     }
-    function rendeStandardContent():Void
+    function renderStandardContent():Void
     {
     }
     override function renderContent():Void
     {
+        super.renderContent();
+
         standardContent = new Div();
-        rendeStandardContent();
-        var fp = new FramePage();
-            fp.addChild(new PageMenu('page'));
-            fp.addChild(standardContent);
-            fp.addChild(new PageFooter());
-        content.addChild(new FrameShadow(fp));
+        renderStandardContent();
+
+        pageFrame = new FramePage();
+
+        if(contentWithMenu==true)
+            pageFrame.addChild(new PageMenu('page'));
+        else
+            pageFrame.addChild(new PageHeader());
+
+        pageFrame.addChild(standardContent);
+        pageFrame.addChild(new PageFooter());
+        content.addChild(new FrameShadow(pageFrame));
     }
 }

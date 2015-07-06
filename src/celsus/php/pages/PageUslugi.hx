@@ -4,10 +4,11 @@ import mthk.php.dom.elements.Div;
 class PageUslugi extends StandardPage
 {
     public function new() {
+        contentWithMenu = true;
         super();
         id = 'uslugi';
     }
-    override function rendeStandardContent():Void
+    override function renderStandardContent():Void
     {
         standardContent.innerHTML = '<h2><span>&nbsp;<span >Zakres usług świadczonych przez Kancelarię Prawniczą</span></span></h2>
                    <h2><span><span>„Ewa i Andrzej Borkowscy”</span></span></h2>

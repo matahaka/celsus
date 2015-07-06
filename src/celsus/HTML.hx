@@ -1,28 +1,28 @@
 package celsus;
+
 #if js
-import js.html.svg.UseElement;
-import js.html.NodeList;
-import js.html.Node;
+
+import mthk.php.dom.elements.Base;
+import mthk.php.dom.Body;
 import celsus.PageData;
 import mthk.js.dom.Document;
 import mthk.js.dom.Loader;
 import mthk.js.dom.Window;
 import celsus.js.Manager;
+import celsus.js.PageContact;
 import mthk.js.core.Scroller;
+
 #elseif php
 import mthk.php.dom.elements.Script;
 import mthk.php.dom.elements.Div;
 import mthk.php.dom.data.HeadData;
 import mthk.php.dom.Html;
-import celsus.php.pages.PageStart;
-import celsus.php.pages.PageKancelaria;
-import celsus.php.pages.PageUslugi;
-import celsus.php.pages.PageWspolpraca;
-import celsus.php.pages.PageKontakt;
 import celsus.php.menus.ScrollMenu;
 import celsus.php.body.svg.Definitions;
 import celsus.php.body.svg.PageShadow;
+
 #end
+
 class HTML {
     static function main() {
         new HTML();
@@ -38,45 +38,50 @@ class HTML {
 #if php
     function html():Void
     {
-        var head = new HeadData();
-        head.title = 'hx.Celsus';
-        head.metaTags.push(["httpequiv"=>"Content-Type", "content"=>"text/html; charset=utf-8"]);
-        head.metaTags.push(["httpequiv"=>"X-UA-Compatible", "content"=>"IE=edge"]);
-        head.metaTags.push(["name"=>"viewport", "content"=>"width=device-width,height=device-height,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"]);
-        head.metaTags.push(["name"=>"description", "content"=>"CELSUS"]);
-        head.metaTags.push(["name"=>"author", "content"=>"dlugolecki.tk"]);
-        head.linkTags.push("src/css/index.css");
-        head.linkTags.push("src/css/menu-page.css");
-        head.linkTags.push("src/css/menu-scroll.css");
+        var html = new Html();
+        html.addClass('bg-pattern');
+//        html.htmlClass = 'bg-pattern';
 
-        var body = '<base href="/" />';// /hx/celsus/www/
-
+        html.head.title = 'hx.Celsus';
+        html.head.base = '/';
+        html.head.metaTags.push(["httpequiv"=>"Content-Type", "content"=>"text/html; charset=utf-8"]);
+        html.head.metaTags.push(["httpequiv"=>"X-UA-Compatible", "content"=>"IE=edge"]);
+        html.head.metaTags.push(["name"=>"viewport", "content"=>"width=device-width,height=device-height,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"]);
+        html.head.metaTags.push(["name"=>"description", "content"=>"CELSUS"]);
+        html.head.metaTags.push(["name"=>"author", "content"=>"dlugolecki.tk"]);
+        html.head.linkTags.push("src/css/index.css");
+        html.head.linkTags.push("src/css/menu-page.css");
+        html.head.linkTags.push("src/css/menu-scroll.css");
+        html.head.linkTags.push("src/css/pages.css");
+        //var body = '<base href="/" />';// /hx/celsus/www/
         var svgDef = new Definitions();
 //        var divSvgCon = new Div("svg-con");
 //        divSvgCon.setSize(0,0);
 //        divSvgCon.addClass("unselectable");
 //        divSvgCon.addChild(svgDef);
-
 //        body += divSvgCon.print();
+
         svgDef.id = 'svg-con';
         svgDef.addClass("unselectable");
         svgDef.addAttr(['style'=>'display:none']);
-        body += svgDef.print();
+        html.body.addChild(svgDef);
 
         var divBgCon = new Div("bg-con");
         divBgCon.addClass("unselectable");
-        body += divBgCon.print();
-
+        html.body.addChild(divBgCon);
 
         var divShadowTop = new Div();
         divShadowTop.addClass("shadow");
         divShadowTop.addClass("shadowtop");
         divShadowTop.addChild(new PageShadow('top'));
+        html.body.addChild(divShadowTop);
 
         var divShadowBottom = new Div();
         divShadowBottom.addClass("shadow");
         divShadowBottom.addClass("shadowbot");
         divShadowBottom.addChild(new PageShadow('bottom'));
+        html.body.addChild(divShadowBottom);
+
         var divPages = new Div("pages");
         var pd:PageData = new PageData();
         pd.addPagesTo(divPages);
@@ -84,20 +89,14 @@ class HTML {
         var menuScroll = new ScrollMenu();
 
         var divPagesCon = new Div("pages-con");
-        divPagesCon.addClass("unselectable");
-        divPagesCon.addChild(divPages);
-        divPagesCon.addChild(menuScroll);
-        divPagesCon.addChild(divShadowTop);
-        divPagesCon.addChild(divShadowBottom);
+            divPagesCon.addClass("unselectable");
+            divPagesCon.addChild(divPages);
+            divPagesCon.addChild(menuScroll);
 
-        body += divPagesCon.print();
-
-        body += new Script("/hx/celsus/www/src/js/celsus.js").print();
-
-
-        var html = new Html();
-        html.head = head.print();
-        html.body = body;
+        html.body.addChild(divPagesCon);
+        html.body.addChild(new Script("/hx/celsus/www/src/js/celsus.js"));
+       //html.body.addChild(new Script("https://maps.googleapis.com/maps/api/js?language=pl&callback=window.gmap.loaded"));
+        //Sys.println(html.printChildrenTree(html));
         Sys.print(html.print());
     }
 #elseif js
@@ -106,10 +105,12 @@ class HTML {
     var ldr:Loader;
     public var mgr:Manager;
     var scrl:Scroller;
+    var kontakt:PageContact;
     function javascript():Void
     {
         new mthk.js.firefox.FixSvgUseXlinkHrefWithBaseTagProblem('pages-con');
         trace('.javascript()');
+
         win = new Window();
         win.onload = pageLoaded;
         //doc = Document.getInstance();
@@ -124,9 +125,14 @@ class HTML {
         scrl = new Scroller();
         scrl.onup = mgr.prev;
         scrl.ondown = mgr.next;
+        scrl.ison = true;
 
-        mgr.onload = jsLoaded;
-        mgr.load();
+        /*mgr.onload = jsLoaded;
+        mgr.load();*/
+
+        kontakt     = new PageContact();
+
+
 /*preloader   = new Preloader();
         start       = new Page('start');
         kancelaria  = new Page('kancelaria');
@@ -142,6 +148,7 @@ class HTML {
         manager.add(kontakt);*/
 //        manager.show(startPage);
 // preloader.show();
+
     }
     function jsLoaded():Void
     {

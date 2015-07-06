@@ -2,10 +2,18 @@ package mthk.php.dom.elements.core;
 import haxe.ds.StringMap;
 class DomElement {
 
+   /* public static function fromString(html:String):DomElement
+    {
+        trace('fromString',html);
+        var zw = new DomElement('div');
+        return zw;
+    }*/
     public var name:String;
     public var id:String;
     public var innerHTML:String;
+    //var css:StringMap<Dynamic>;
     var attr:Array<StringMap<String>>;
+    var events:StringMap<Dynamic->Void>;
     var children:Array<DomElement>;
     var classes:Array<String>;
 
@@ -28,6 +36,18 @@ class DomElement {
             zw += '</'+name+'>';
         return zw;
     }
+/*
+    public function addEventListener(event:String,listener:Dynamic->Void):Void
+    {
+        if(events==null)
+            events = new StringMap<Dynamic->Void>;
+
+        events.set(event,listener);
+    }
+    public function removeEventListener(event:String,listener:Dynamic->Void):Void
+    {
+
+    }*/
 
     public function setSize(width:UInt,height:UInt):Void
     {

@@ -7,6 +7,7 @@ class HeadData {
 
     public var lang = "en";
     public var charset = "UTF-8";
+    public var base = "";
     public var title = "mthk.php.dom.data";
 
     public var metaTags:Array<StringMap<String>>=[];
@@ -19,6 +20,7 @@ class HeadData {
         var zw = '<head lang="'+lang+'">';
             zw += '<meta charset="'+charset+'">';
             zw += '<title>'+title+'</title>';
+
         //tag <meta >
         var mt:StringMap<String>;
         var meta = '';
@@ -34,7 +36,7 @@ class HeadData {
         for(linkTag in linkTags)
             zw += linkTemp.execute({ href:linkTag });
 
-
+        zw += '<base href="'+base+'"/>';
         zw += '</head>';
         return zw;
     }

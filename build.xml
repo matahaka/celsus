@@ -10,6 +10,7 @@
                 <include name="index.css"/>
                 <include name="menu-page.css"/>
                 <include name="menu-scroll.css"/>
+                <include name="pages.css"/>
             </fileset>
         </copy>
         <copy todir="www/src/grf/">
@@ -19,6 +20,9 @@
                 <include name="logo.415x273.png"/>
                 <include name="logo.415x83.png"/>
             </fileset>
+          <!--  <fileset dir="html/grf/svg/" >
+                <include name="map-place.svg"/>
+            </fileset>-->
         </copy>
         <copy todir="www/src/grf/slider/">
             <fileset dir="html/grf/slider/" includes="1.jpg"/>

@@ -1,5 +1,5 @@
 package mthk.js.core;
-import js.html.DOMElement;
+
 class EventHub {
 
     public function new() {

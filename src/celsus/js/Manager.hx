@@ -1,5 +1,6 @@
 package celsus.js;
 
+import js.Browser;
 import js.html.CSSStyleDeclaration;
 import haxe.ds.StringMap;
 import celsus.PageData.CelsusPageNames;
@@ -11,6 +12,7 @@ class Manager {
     public var actualPageIdx = -1;
     var trg:js.html.DOMElement;
     var scrollbar:js.html.DOMElement;
+    var scrollmenubar:js.html.DOMElement;
     var w:UInt;
     var h:UInt;
     var pd:PageData;
@@ -23,6 +25,7 @@ class Manager {
         pd = new PageData();
         trg = js.Browser.document.getElementById('pages');
         scrollbar = js.Browser.document.getElementById('scroll-bar');
+        scrollmenubar = js.Browser.document.getElementById('scroll-menu-bar');
         trg.style.top = '0';
         scrollbar.style.marginTop = '0';
     }
@@ -77,16 +80,21 @@ class Manager {
 
 
 
-    public dynamic function onload():Void {    }
+    /*public dynamic function onload():Void {    }
 
     public function load():Void
     {
-        loaded();
+        *//*var ldr = Http();
+            ldr.url = 'https://maps.googleapis.com/maps/api/js';
+            ldr.addParameter('language','pl');
+            ldr.addParameter('callback','window.gmap.loaded');
+            ldr.onData = loaded;*//*
+       loaded();
     }
     function loaded():Void
     {
         onload();
-    }
+    }*/
 
 //    public function add(el:Page):Void{
 //        trace('add',el);
@@ -135,7 +143,7 @@ class Manager {
 
     function animateScrollBarUpdate():Void
     {
-        scrollbar.style.marginTop = scrollbarPos.y + 'px';
+        scrollbar.style.marginTop = scrollmenubar.style.marginTop = scrollbarPos.y + 'px';
     }
     function animatePageUpdate():Void
     {
@@ -145,6 +153,7 @@ class Manager {
     {
         animatePageUpdate();
         js.Browser.location.hash = '/'+pgs[actualPageIdx].id;
+
     }
 
 

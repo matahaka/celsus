@@ -2,10 +2,11 @@ package mthk.php.dom.elements.text;
 import mthk.php.dom.elements.core.DomElement;
 class A extends DomElement
 {
-    public function new(href:String,?cont:String=null) {
+    public function new(?href:String,?innerHTML:String) {
         super('a');
-        addAttr(['href'=>href]);
-        if(cont!=null) this.innerHTML=cont;
+        if(href!=null && href!='')
+            addAttr(['href'=>href]);
+        if(innerHTML!=null) this.innerHTML=innerHTML;
     }
 
 }

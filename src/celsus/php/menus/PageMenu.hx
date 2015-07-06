@@ -1,16 +1,18 @@
 package celsus.php.menus;
+
 import celsus.PageData.CelsusPageNames;
+import celsus.php.body.Page;
 import mthk.php.dom.elements.list.Ul;
-import mthk.php.dom.elements.text.P;
 import mthk.php.dom.elements.core.DomElement;
 import mthk.php.dom.elements.text.A;
-import mthk.php.dom.elements.text.Span;
-import mthk.php.dom.elements.text.Small;
 import mthk.php.dom.elements.Menu;
 import mthk.php.dom.elements.Div;
+
 class PageMenu extends Div{
-    public function new(type:String)
+    public function new(type:String,?withAddress:Bool)
     {
+        if(withAddress==null)
+            withAddress = (type=='page')?true:false;
         super();
         addClass('menu');
         addClass("menu-page");
@@ -19,10 +21,8 @@ class PageMenu extends Div{
         var pm = CelsusPageNames.map();
         for (k in pm.keys()){
             if(k!='start')
-            ul.addListAnchore(PageData.baseURL+"#"+k,cast pm.get(k));
+            ul.addAnchoreText(PageData.baseURL+"#"+k,cast pm.get(k));
         }
-
-
         var menu = new Menu();
         if(type=='page'){
             var a:A = new A("#start");
@@ -32,11 +32,15 @@ class PageMenu extends Div{
         menu.addChild(ul);
         addChild(menu);
 ////////////////////////////////////////////
-        addChild(addressSpan());
+        if(withAddress==true){
+            addClass("menu-page-withAddress");
+            addChild(Page.addressSpan());
+        }
     }
 
-    function addressSpan():DomElement
+    /*function addressSpan():DomElement
     {
+        addClass("menu-page-withAddress");
         var ul = new Small(' ul. ');
         var lok = new Small(' lok.');
         var tel = new Small(' telefon: ');
@@ -46,5 +50,5 @@ class PageMenu extends Div{
         var span = new Span();
             span.addChild(p);
         return span;
-    }
+    }*/
 }

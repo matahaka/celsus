@@ -25,10 +25,10 @@ class Scroller {
     function onscroll(e:WheelEvent):Void
     {
         if(ison == true){
-            trace('onscroll');
-            e.stopImmediatePropagation();
-            e.stopPropagation();
-            e.preventDefault();
+            //trace('onscroll');
+//            e.stopImmediatePropagation();
+//            e.stopPropagation();
+//            e.preventDefault();
             if(e.deltaY>0)
                 ondown();
             else if(e.deltaY<0)

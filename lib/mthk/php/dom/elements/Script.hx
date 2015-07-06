@@ -4,7 +4,10 @@ class Script extends DomElement{
 
     public function new(url:String=null) {
         super('script');
-        addAttr(['src'=>url]);
+
+        if(url!=null)
+            addAttr(['src'=>url]);
+
         addAttr(['type'=>'text/javascript']);
     }
 
