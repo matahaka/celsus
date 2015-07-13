@@ -1,24 +1,25 @@
 package mthk.google;
+import mthk.google.js.maps.GmLatLngBounds;
 import celsus.php.body.svg.IconMapMarker;
 import mthk.php.dom.elements.Div;
 import celsus.php.body.Page;
 import mthk.google.js.GoogleMap;
-import mthk.google.js.GoogleMap.GoogleMapObject;
-import mthk.google.js.GoogleMap.GoogleMapLatLng;
-import mthk.google.js.GoogleMap.GoogleMapTypeId;
-import mthk.google.js.GoogleMap.GoogleMapMarker;
-import mthk.google.js.GoogleMap.GoogleMapInfoWindow;
+import mthk.google.js.maps.GmMap;
+import mthk.google.js.maps.GmLatLng;
+import mthk.google.js.maps.GmMarker;
+import mthk.google.js.maps.GmInfoWindow;
+import mthk.google.js.maps.GmProjection;
 import js.Browser;
 import js.html.HTMLDocument;
 class GMap {
 
     var trg:js.html.DOMElement;
-    public var map:GoogleMapObject;
-    public var mapLatLang:GoogleMapLatLng;
+    public var map:GmMap;
+    public var mapLatLang:GmLatLng;
     //public var mapOptions:Dynamic;
 
-    var marker:GoogleMapMarker;
-    var infoWindow:GoogleMapInfoWindow;
+    var marker:GmMarker;
+    var infoWindow:GmInfoWindow;
 
     public function new(domId:String)
     {
@@ -45,18 +46,18 @@ class GMap {
         onload();
 //var btn = Browser.document.getElementById('');
 /*
-        mapLatLang = GoogleMap.castLatLng(52.1568608,21.0786223);
+        mapLatLang = Gm.castLatLng(52.1568608,21.0786223);
         var mapOptions = {
             zoom:15,
             center:mapLatLang,
-            mapTypeId:GoogleMapTypeId.ROADMAP,
+            mapTypeId:GmTypeId.ROADMAP,
             backgroundColor:"#000",
             scrollwheel:true,
             disableDefaultUI:true,
             disableDoubleClickZoom:true,
             styles:getStyle()
         };
-        map = GoogleMap.castMap(trg, mapOptions);
+        map = Gm.castMap(trg, mapOptions);
         //map.panBy(100,0);
         renderMarker();
         renderWindow();
@@ -64,11 +65,26 @@ class GMap {
         */
     }
 
-    public function renderMap(mapOptions:Dynamic):Void
+    var projection:GmProjection;
+    var bounds:GmLatLngBounds;
+    public function renderMap(mapOptions:GmMapOptions):Void
     {
         this.map = GoogleMap.castMap(trg, mapOptions);
+        GoogleMap.addListener(this.map,'projection_changed', function(?e:Dynamic):Void {
+            projection = this.map.getProjection();
+        });
+        GoogleMap.addListener(this.map, 'idle', onRenderReady);
     }
-    public function renderMarker(title:String,?position:GoogleMapLatLng,icon:Dynamic):GoogleMapMarker
+
+    dynamic public function onRenderReady(?e:Dynamic):Void
+    {
+
+    }
+
+
+
+
+    public function renderMarker(title:String,?position:GmLatLng,icon:Dynamic):GmMarker
     {
         return GoogleMap.castMarker({
             position: position==null?mapLatLang:position,
@@ -77,9 +93,42 @@ class GMap {
             title: title
         });
     }
-    public function renderWindow(contentHtml:String):GoogleMapInfoWindow
+    public function renderWindow(contentHtml:String):GmInfoWindow
     {
         return GoogleMap.castInfoWindow({content:contentHtml});
+    }
+    public function calcInfoWindowBounds(win:GmInfoWindow):GmLatLngBounds
+    {
+        var domEls = Browser.document.getElementsByClassName('gm-style-iw');
+        var markerSpace = 32+8;
+        var maxTop = 0.0;
+        var maxLeft = 0.0;
+        var maxRight = 0.0;
+        for (el in domEls)
+        {
+            var topOfWindow = el.offsetHeight + markerSpace;
+            var leftOfWindow = el.offsetWidth / 2;
+            var rightOfWindow = el.offsetWidth / 2;
+
+            if (topOfWindow > maxTop) maxTop = topOfWindow;
+            if (leftOfWindow > maxLeft) maxLeft = leftOfWindow;
+            if (rightOfWindow > maxRight) maxRight = rightOfWindow;
+        }
+        trace('maxTop:$maxTop');
+        trace('maxLeft:$maxLeft');
+        trace('maxRight:$maxRight');
+        var bounds = GoogleMap.castBounds();
+        var leftBounds = projection.fromLatLngToPoint(GoogleMap.castLatLng(bounds.getNorthEast().lat(),bounds.getSouthWest().lng()));
+        var rightBounds = projection.fromLatLngToPoint(GoogleMap.castLatLng(bounds.getNorthEast().lat(),bounds.getNorthEast().lng()));
+        var topBounds0 = rightBounds.y + maxTop;
+        var rightBounds0 = rightBounds.x + maxRight;
+        var leftBounds0 = leftBounds.x - maxLeft;
+        var p1 = GoogleMap.castPoint(leftBounds0,topBounds0);
+        var p2 = GoogleMap.castPoint(rightBounds0,topBounds0);
+        bounds.extend(projection.fromPointToLatLng(p1));
+        bounds.extend(projection.fromPointToLatLng(p2));
+        //this.map.fitBounds(bounds);
+        return  bounds;
     }
     /*
     function renderMarker():Void

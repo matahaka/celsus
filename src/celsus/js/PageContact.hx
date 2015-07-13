@@ -1,11 +1,18 @@
 package celsus.js;
 
+import mthk.google.js.maps.GmLatLngBounds;
+import mthk.google.js.maps.GmRectangle;
 import mthk.js.core.EventHub;
 import mthk.php.dom.elements.Div;
 import js.Browser;
 import js.html.DOMElement;
 import mthk.google.GMap;
 import mthk.google.js.GoogleMap;
+import mthk.google.js.maps.GmMarker;
+import mthk.google.js.maps.GmInfoWindow;
+import mthk.google.js.maps.GmRectangle;
+import mthk.google.js.maps.GmLatLng;
+import mthk.google.js.maps.GmRectangle.GmRectangleOptions;
 import celsus.php.body.svg.IconMapMarker;
 import celsus.php.body.Page;
 
@@ -14,9 +21,9 @@ class PageContact
     var root:DOMElement;
     var btn:DOMElement;
     var gmap:GMap;
-    var mrk:GoogleMapMarker;
-    var rmrk:GoogleMapMarker;
-    var win:GoogleMapInfoWindow;
+    var mrk:GmMarker;
+    var rmrk:GmMarker;
+    var win:GmInfoWindow;
     public function new()
     {
         root = Browser.document.getElementById('kontakt');
@@ -28,7 +35,8 @@ class PageContact
     function render():Void
     {
         gmap.mapLatLang = GoogleMap.castLatLng(52.1568608,21.0786223);
-        gmap.renderMap({
+        gmap.onRenderReady = onRender;
+        gmap.renderMap(cast {
             zoom:15,
             center:gmap.mapLatLang,
             mapTypeId:GoogleMapTypeId.ROADMAP,
@@ -38,40 +46,88 @@ class PageContact
             disableDoubleClickZoom:true,
             styles:getStyle()
         });
+
         mrk = gmap.renderMarker('MARKER',null,{
             path: IconMapMarker.gmap,
             fillColor: '#FF8800',
             fillOpacity: 1,
             scale: 0.05
         });
-
-        var logoBig = new Div();
-            logoBig.addClass("logo-img-big");
-
-        win = gmap.renderWindow(logoBig.print()+Page.addressSpan().print());
-
-        openWindow();
-        if(btn!=null)
-            EventHub.addEventListener(btn, 'click', openWindow);
-
         GoogleMap.addListener(mrk, 'click', openWindow);
         GoogleMap.addListener(gmap.map, 'click', dropMarker);
+
+        GoogleMap.addListener(gmap.map, 'bounds_changed', boundsChanged);
+    }
+    function onRender(?e:Dynamic):Void
+    {
+        if(win == null) {
+            var logoBig = new Div();
+            logoBig.addClass("logo-img-big");
+            win = gmap.renderWindow(logoBig.print()+Page.addressSpan().print());
+            GoogleMap.addListener(win,'domready',onOpenWindow);
+            openWindow();
+        }
+    }
+    function onOpenWindow(?e:Dynamic):Void
+    {
+        trace('onOpenWindow($e)');
+        //var b = gmap.calcInfoWindowBounds(win);
+        //trace('WIN',b);
+        //drawRect(b);
     }
     function openWindow(?e:Dynamic):Void
     {
         trace('openWindow($e)');
-        gmap.setCenter();
-        win.open(gmap.map,mrk);
+        //gmap.setCenter();
+        //if(win.)
+            win.open(gmap.map,mrk);
+    }
+    function boundsChanged(?e:Dynamic):Void
+    {
+        trace('boundsChanged($e)');
+        var mb = gmap.map.getBounds();
+        trace('${mb}');
     }
     function dropMarker(?e:Dynamic):Void
     {
-        trace('dropMarker($e)');
-        rmrk = gmap.renderMarker('MARKER',e.latLng,{
-            path: IconMapMarker.gmap,
-            fillColor: '#8800FF',
-            fillOpacity: 1,
-            scale: 0.05
-        });
+        if( rmrk == null)
+            rmrk = gmap.renderMarker('MARKER',e.latLng,{
+                path: IconMapMarker.gmap,
+                fillColor: '#8800FF',
+                fillOpacity: 1,
+                scale: 0.05
+            });
+        else
+            rmrk.setPosition(e.latLng);
+
+        //var b = gmap.calcInfoWindowBounds(win);
+        var  b = GoogleMap.castBounds(
+            gmap.mapLatLang,
+            cast e.latLng
+        );
+        trace('WIN',b);
+        drawRect(b);
+    }
+
+    var rectO:GmRectangleOptions;
+    var rect:GmRectangle;
+    function drawRect(b:GmLatLngBounds):Void
+    {
+
+        if(rectO == null)
+            rectO = cast {
+                map:gmap.map,bounds:b,
+                fillColor:"#FF0000",fillOpacity:0.5,
+                strokeWeight : 2,strokeColor:"#FF0000",strokeOpacity : 0.8
+            };
+        else
+            rectO.bounds = b;
+
+        if(rect == null)
+            rect = GoogleMap.castRectangle(rectO);
+        else
+            rect.setOptions(rectO);
+
     }
     function getStyle():Array<Dynamic>{
         var zw = new Array<Dynamic>();

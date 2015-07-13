@@ -15,14 +15,15 @@ class MenuKontaktMap extends Menu
         var use = new Use('#iconMapMarker','60px','60px');
             svg.addChild(use);
 
-        var showBtn = new A();
-        showBtn.addChild(svg);
-        addChild(showBtn);
+//        var showBtn = new A();
+//        showBtn.addChild(svg);
+//        addChild(showBtn);
 
-      /*  var ul = new Ul();
-            ul.addAnchoreElement('',);
+        var ul = new Ul();
+            ul.addAnchoreElement('',svg);
             //ul.addAnchoreText('','2');
-        addChild(ul);*/
+        addChild(ul);
+/* */
     }
 
 }
